@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Hiven</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .welcome-screen {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .welcome-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .onboarding-screen, .dashboard-screen {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .question-card {
+            background: #f8f9ff;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #e0e7ff;
+            padding: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .option-btn:hover, .option-btn.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateY(-2px);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e7ff;
+            border-radius: 4px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .curiosity-map {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .interests-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .interest-tag {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .activity-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .difficulty-badge {
+            background: #e0f2fe;
+            color: #0277bd;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .activity-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .tag {
+            background: #f0f4ff;
+            color: #667eea;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Wellness Features */
+        .wellness-section {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 4px solid #ff6b9d;
+        }
+
+        .mood-checker {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .mood-options {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .mood-btn {
+            background: white;
+            border: 2px solid #e0e7ff;
+            border-radius: 50px;
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mood-btn:hover, .mood-btn.selected {
+            border-color: #ff6b9d;
+            background: #fff0f5;
+            transform: translateY(-2px);
+        }
+
+        .wellness-games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .wellness-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.8rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            border-left: 4px solid #ff6b9d;
+            position: relative;
+        }
+
+        .wellness-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .wellness-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .wellness-badge {
+            background: #ff6b9d;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+
+        .tab-navigation {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid transparent;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .tab-btn.active {
+            background: white;
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .quick-relief-section {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        /* Game Styles */
+        .game-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .close-game {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .zen-garden {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(45deg, #f4e4bc, #e6d3a3);
+            border-radius: 10px;
+            position: relative;
+            cursor: crosshair;
+            border: 2px solid #d4c5a9;
+            overflow: hidden;
+        }
+
+        .zen-pattern {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #8b7355 40%, transparent 40%);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .melody-creator {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .note-btn {
+            aspect-ratio: 1;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            transition: all 0.2s ease;
+        }
+
+        .note-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .focus-game {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            max-width: 400px;
+            margin: 2rem auto;
+        }
+
+        .focus-tile {
+            aspect-ratio: 1;
+            border: 3px solid #e0e7ff;
+            border-radius: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .focus-tile:hover {
+            transform: scale(1.05);
+        }
+
+        .focus-tile.correct {
+            border-color: #10b981;
+            background: #d1fae5;
+        }
+
+        .breathing-container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .breathing-circle {
+            width: 200px;
+            height: 200px;
+            border: 4px solid #667eea;
+            border-radius: 50%;
+            margin: 2rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+            transition: all 4s ease-in-out;
+        }
+
+        .breathing-circle.inhale {
+            transform: scale(1.3);
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .breathing-circle.exhale {
+            transform: scale(0.8);
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .trivia-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .pet-container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .virtual-pet {
+            font-size: 4rem;
+            margin: 2rem;
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .pet-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 2rem 0;
+        }
+
+        .pet-stat {
+            text-align: center;
+        }
+
+        .stat-bar {
+            width: 60px;
+            height: 10px;
+            background: #e0e7ff;
+            border-radius: 5px;
+            margin: 0.5rem auto;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .features-grid, .activity-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mood-options {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .melody-creator {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        
+        const { useState, useEffect } = React;
+
+        // Sample data
+        const interests = [
+            "Technology", "Psychology", "Creative Writing", "Music", "Art", "Science", 
+            "Gaming", "Philosophy", "History", "Mathematics", "Social Issues", "Sports"
+        ];
+
+        const learningStyles = [
+            { id: "visual", name: "Visual Learner", desc: "Learn best through images, diagrams, and visual aids" },
+            { id: "auditory", name: "Auditory Learner", desc: "Learn best through listening and discussion" },
+            { id: "kinesthetic", name: "Hands-on Learner", desc: "Learn best through doing and physical activities" },
+            { id: "social", name: "Social Learner", desc: "Learn best through group activities and collaboration" }
+        ];
+
+        const sampleActivities = [
+            {
+                id: 1,
+                title: "Create an AI Ethics Story",
+                description: "Write a short story exploring the moral dilemmas of artificial intelligence",
+                duration: "20-30 minutes",
+                difficulty: "Medium",
+                subjects: ["Technology", "Creative Writing", "Philosophy"],
+                type: "Creative Challenge",
+                category: "learning"
+            },
+            {
+                id: 2,
+                title: "Psychology of Color in Art",
+                description: "Explore how colors affect emotions by creating a mood-based color palette",
+                duration: "15-25 minutes",
+                difficulty: "Easy",
+                subjects: ["Psychology", "Art", "Science"],
+                type: "Research & Create",
+                category: "learning"
+            },
+            {
+                id: 3,
+                title: "Game Theory in Daily Life",
+                description: "Identify and analyze game theory concepts in social media interactions",
+                duration: "25-35 minutes",
+                difficulty: "Hard",
+                subjects: ["Mathematics", "Psychology", "Social Issues"],
+                type: "Analysis Project",
+                category: "learning"
+            }
+        ];
+
+        const wellnessGames = [
+            {
+                id: 4,
+                title: "Zen Garden Builder",
+                description: "Create patterns in digital sand to clear your mind and reduce stress",
+                duration: "5-15 minutes",
+                difficulty: "Relaxing",
+                subjects: ["Mindfulness", "Art", "Stress Relief"],
+                type: "Interactive Game",
+                category: "wellness",
+                icon: "🧘"
+            },
+            {
+                id: 5,
+                title: "Focus Flow Challenge",
+                description: "Match colors and shapes in this engaging pattern game that boosts concentration",
+                duration: "3-10 minutes",
+                difficulty: "Easy",
+                subjects: ["Cognitive Training", "Focus", "Pattern Recognition"],
+                type: "Brain Game",
+                category: "wellness",
+                icon: "🎯"
+            },
+            {
+                id: 6,
+                title: "Mood Melody Creator",
+                description: "Compose simple melodies based on your current emotions - no music experience needed!",
+                duration: "5-20 minutes",
+                difficulty: "Easy",
+                subjects: ["Music", "Emotional Expression", "Creativity"],
+                type: "Creative Therapy",
+                category: "wellness",
+                icon: "🎵"
+            },
+            {
+                id: 7,
+                title: "Breathing techniques",
+                description: "Guide a character through peaceful landscapes using breathing techniques",
+                duration: "3-8 minutes",
+                difficulty: "Relaxing",
+                subjects: ["Mindfulness", "Breathing Exercises", "Relaxation"],
+                type: "Guided Experience",
+                category: "wellness",
+                icon: "🌸"
+            },
+            {
+                id: 8,
+                title: "Energy Boost Trivia",
+                description: "Quick-fire fun facts about your favorite topics to spark curiosity and beat boredom",
+                duration: "2-5 minutes",
+                difficulty: "Easy",
+                subjects: ["General Knowledge", "Fun Facts", "Quick Learning"],
+                type: "Mini Quiz",
+                category: "wellness",
+                icon: "⚡"
+            },
+            {
+                id: 9,
+                title: "Virtual Pet Study Buddy",
+                description: "Care for a digital companion that grows as you complete learning activities",
+                duration: "Ongoing",
+                difficulty: "Easy",
+                subjects: ["Motivation", "Habit Building", "Companionship"],
+                type: "Gamification",
+                category: "wellness",
+                icon: "🐱"
+            }
+        ];
+
+        function LearnFlowApp() {
+            const [currentScreen, setCurrentScreen] = useState('welcome');
+            const [onboardingStep, setOnboardingStep] = useState(0);
+            const [currentGame, setCurrentGame] = useState(null);
+            const [userProfile, setUserProfile] = useState({
+                name: '',
+                selectedInterests: [],
+                learningStyle: '',
+                goals: []
+            });
+
+            // Game states
+            const [zenPatterns, setZenPatterns] = useState([]);
+            const [melodyNotes, setMelodyNotes] = useState([]);
+            const [focusPattern, setFocusPattern] = useState([]);
+            const [focusUserPattern, setFocusUserPattern] = useState([]);
+            const [breathingPhase, setBreathingPhase] = useState('ready');
+            const [triviaFact, setTriviaFact] = useState('');
+            const [petStats, setPetStats] = useState({ happiness: 80, energy: 60, learning: 90 });
+
+            const triviaFacts = [
+                "Octopuses have three hearts and blue blood! 🐙",
+                "Honey never spoils - archaeologists found 3000-year-old honey that's still edible! 🍯",
+                "A group of flamingos is called a 'flamboyance' 🦩",
+                "Bananas are berries, but strawberries aren't! 🍓",
+                "The shortest war in history lasted only 38-45 minutes! ⚔️",
+                "Dolphins have names for each other - unique whistle signatures! 🐬",
+                "There are more possible chess games than atoms in the observable universe! ♟️"
+            ];
+
+            const noteColors = ['#ff6b9d', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd'];
+            const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C'];
+
+            const onboardingQuestions = [
+                {
+                    question: "What's your name?",
+                    type: "text",
+                    key: "name"
+                },
+                {
+                    question: "What subjects or topics spark your curiosity? (Select 3-5)",
+                    type: "multi-select",
+                    options: interests,
+                    key: "selectedInterests"
+                },
+                {
+                    question: "How do you learn best?",
+                    type: "single-select",
+                    options: learningStyles,
+                    key: "learningStyle"
+                },
+                {
+                    question: "What are your learning goals?",
+                    type: "multi-select",
+                    options: [
+                        "Explore new subjects",
+                        "Connect different topics",
+                        "Build creative projects",
+                        "Improve critical thinking",
+                        "Find study motivation",
+                        "Connect with peers"
+                    ],
+                    key: "goals"
+                }
+            ];
+
+            // Game Components
+            const ZenGardenGame = () => {
+                const handleMouseMove = (e) => {
+                    if (e.buttons === 1) {
+                        const rect = e.target.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        setZenPatterns(prev => [...prev, { x, y, id: Date.now() }]);
+                    }
+                };
+
+                const clearGarden = () => setZenPatterns([]);
+
+                return (
+                    <div className="game-container">
+                        <button className="close-game" onClick={() => setCurrentGame(null)}>×</button>
+                        <h3>🧘 Zen Garden Builder</h3>
+                        <p>Click and drag to create peaceful patterns in the sand</p>
+                        <div 
+                            className="zen-garden" 
+                            onMouseMove={handleMouseMove}
+                            onMouseDown={handleMouseMove}
+                        >
+                            {zenPatterns.map(pattern => (
+                                <div 
+                                    key={pattern.id}
+                                    className="zen-pattern"
+                                    style={{ left: pattern.x - 10, top: pattern.y - 10 }}
+                                />
+                            ))}
+                        </div>
+                        <div className="game-controls">
+                            <button className="btn btn-secondary" onClick={clearGarden}>Clear Garden</button>
+                            <button className="btn btn-primary">Save Pattern</button>
+                        </div>
+                    </div>
+                );
+            };
+
+            const MelodyCreatorGame = () => {
+                const playNote = (note, index) => {
+                    setMelodyNotes(prev => [...prev, { note, color: noteColors[index] }]);
+                };
+
+                const clearMelody = () => setMelodyNotes([]);
+
+                return (
+                    <div className="game-container">
+                        <button className="close-game" onClick={() => setCurrentGame(null)}>×</button>
+                        <h3>🎵 Mood Melody Creator</h3>
+                        <p>Click the notes to create your own melody</p>
+                        <div className="melody-creator">
+                            {notes.map((note, index) => (
+                                <button
+                                    key={note + index}
+                                    className="note-btn"
+                                    style={{ background: noteColors[index] }}
+                                    onClick={() => playNote(note, index)}
+                                >
+                                    {note}
+                                </button>
+                            ))}
+                        </div>
+                        <div style={{ minHeight: '60px', padding: '1rem', background: '#f8f9ff', borderRadius: '10px', margin: '1rem 0' }}>
+                            <strong>Your Melody: </strong>
+                            {melodyNotes.map((note, index) => (
+                                <span key={index} style={{ color: note.color, fontSize: '1.2rem', margin: '0 0.2rem' }}>
+                                    {note.note}
+                                </span>
+                            ))}
+                        </div>
+                        <div className="game-controls">
+                            <button className="btn btn-secondary" onClick={clearMelody}>Clear</button>
+                            <button className="btn btn-primary">Save Melody</button>
+                        </div>
+                    </div>
+                );
+            };
+
+            const FocusFlowGame = () => {
+                const [currentLevel, setCurrentLevel] = useState(1);
+                const [score, setScore] = useState(0);
+                const [showPattern, setShowPattern] = useState(false);
+
+                const colors = ['🔴', '🟡', '🔵', '🟢'];
+
+                const generatePattern = () => {
+                    const pattern = [];
+                    for (let i = 0; i < 4; i++) {
+                        pattern.push(colors[Math.floor(Math.random() * colors.length)]);
+                    }
+                    setFocusPattern(pattern);
+                    setFocusUserPattern([]);
+                    setShowPattern(true);
+                    setTimeout(() => setShowPattern(false), 2000);
+                };
+
+                const handleTileClick = (symbol) => {
+                    if (showPattern) return;
+                    const newUserPattern = [...focusUserPattern, symbol];
+                    setFocusUserPattern(newUserPattern);
+                    
+                    if (newUserPattern.length === focusPattern.length) {
+                        if (JSON.stringify(newUserPattern) === JSON.stringify(focusPattern)) {
+                            setScore(score + 10);
+                            setTimeout(generatePattern, 1000);
+                        } else {
+                            setTimeout(() => {
+                                setFocusUserPattern([]);
+                                setShowPattern(true);
+                                setTimeout(() => setShowPattern(false), 1500);
+                            }, 500);
+                        }
+                    }
+                };
+
+                React.useEffect(() => {
+                    generatePattern();
+                }, []);
+
+                return (
+                    <div className="game-container">
+                        <button className="close-game" onClick={() => setCurrentGame(null)}>×</button>
+                        <h3>🎯 Focus Flow Challenge</h3>
+                        <p>Memorize the pattern, then repeat it!</p>
+                        <div style={{ textAlign: 'center', margin: '1rem 0' }}>
+                            <strong>Score: {score} | Level: {currentLevel}</strong>
+                        </div>
+                        <div className="focus-game">
+                            {colors.map((color, index) => (
+                                <div
+                                    key={index}
+                                    className={`focus-tile ${
+                                        showPattern && focusPattern[index] === color ? 'correct' : 
+                                        focusUserPattern[index] === color ? 'correct' : ''
+                                    }`}
+                                    onClick={() => handleTileClick(color)}
+                                >
+                                    {color}
+                                </div>
+                            ))}
+                        </div>
+                        <div className="game-controls">
+                            <button className="btn btn-secondary" onClick={generatePattern}>New Pattern</button>
+                        </div>
+                    </div>
+                );
+            };
+
+            const BreathingGame = () => {
+                const [breathingActive, setBreathingActive] = useState(false);
+
+                const startBreathing = () => {
+                    setBreathingActive(true);
+                    const breathingCycle = () => {
+                        setBreathingPhase('inhale');
+                        setTimeout(() => {
+                            setBreathingPhase('exhale');
+                            setTimeout(() => {
+                                if (breathingActive) breathingCycle();
+                            }, 4000);
+                        }, 4000);
+                    };
+                    breathingCycle();
+                };
+
+                const stopBreathing = () => {
+                    setBreathingActive(false);
+                    setBreathingPhase('ready');
+                };
+
+                return (
+                    <div className="game-container">
+                        <button className="close-game" onClick={() => setCurrentGame(null)}>×</button>
+                        <div className="breathing-container">
+                            <h3>🌸 Breathing Space Adventure</h3>
+                            <p>Follow the circle's rhythm to calm your mind</p>
+                            <div className={`breathing-circle ${breathingPhase}`}>
+                                {breathingPhase === 'ready' && 'Ready'}
+                                {breathingPhase === 'inhale' && 'Breathe In'}
+                                {breathingPhase === 'exhale' && 'Breathe Out'}
+                            </div>
+                            <div className="game-controls">
+                                {!breathingActive ? (
+                                    <button className="btn btn-primary" onClick={startBreathing}>
+                                        Start Breathing Exercise
+                                    </button>
+                                ) : (
+                                    <button className="btn btn-secondary" onClick={stopBreathing}>
+                                        Stop
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            const TriviaGame = () => {
+                const getRandomFact = () => {
+                    const randomFact = triviaFacts[Math.floor(Math.random() * triviaFacts.length)];
+                    setTriviaFact(randomFact);
+                };
+
+                React.useEffect(() => {
+                    getRandomFact();
+                }, []);
+
+                return (
+                    <div className="game-container">
+                        <button className="close-game" onClick={() => setCurrentGame(null)}>×</button>
+                        <h3>⚡ Energy Boost Trivia</h3>
+                        <div className="trivia-card">
+                            <h4>Did you know?</h4>
+                            <p style={{ fontSize: '1.1rem', margin: '1rem 0' }}>{triviaFact}</p>
+                        </div>
+                        <div className="game-controls">
+                            <button className="btn btn-primary" onClick={getRandomFact}>
+                                Another Fun Fact!
+                            </button>
+                        </div>
+                    </div>
+                );
+            };
+
+            const VirtualPetGame = () => {
+                const feedPet = () => {
+                    setPetStats(prev => ({
+                        ...prev,
+                        happiness: Math.min(100, prev.happiness + 10),
+                        energy: Math.min(100, prev.energy + 5)
+                    }));
+                };
+
+                const playWithPet = () => {
+                    setPetStats(prev => ({
+                        ...prev,
+                        happiness: Math.min(100, prev.happiness + 15),
+                        energy: Math.max(0, prev.energy - 5)
+                    }));
+                };
+
+                const studyWithPet = () => {
+                    setPetStats(prev => ({
+                        ...prev,
+                        learning: Math.min(100, prev.learning + 10),
+                        energy: Math.max(0, prev.energy - 10)
+                    }));
+                };
+
+                return (
+                    <div className="game-container">
+                        <button className="close-game" onClick={() => setCurrentGame(null)}>×</button>
+                        <div className="pet-container">
+                            <h3>🐱 Virtual Pet Study Buddy</h3>
+                            <div className="virtual-pet">🐱</div>
+                            <p>Meet Whiskers, your study companion!</p>
+                            
+                            <div className="pet-stats">
+                                <div className="pet-stat">
+                                    <div>😊 Happiness</div>
+                                    <div className="stat-bar">
+                                        <div className="stat-fill" style={{ width: `${petStats.happiness}%` }}></div>
+                                    </div>
+                                    <div>{petStats.happiness}%</div>
+                                </div>
+                                <div className="pet-stat">
+                                    <div>⚡ Energy</div>
+                                    <div className="stat-bar">
+                                        <div className="stat-fill" style={{ width: `${petStats.energy}%` }}></div>
+                                    </div>
+                                    <div>{petStats.energy}%</div>
+                                </div>
+                                <div className="pet-stat">
+                                    <div>📚 Learning</div>
+                                    <div className="stat-bar">
+                                        <div className="stat-fill" style={{ width: `${petStats.learning}%` }}></div>
+                                    </div>
+                                    <div>{petStats.learning}%</div>
+                                </div>
+                            </div>
+
+                            <div className="game-controls">
+                                <button className="btn btn-primary" onClick={feedPet}>Feed Whiskers</button>
+                                <button className="btn btn-primary" onClick={playWithPet}>Play</button>
+                                <button className="btn btn-primary" onClick={studyWithPet}>Study Together</button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderCurrentGame = () => {
+                switch(currentGame) {
+                    case 'zen': return <ZenGardenGame />;
+                    case 'melody': return <MelodyCreatorGame />;
+                    case 'focus': return <FocusFlowGame />;
+                    case 'breathing': return <BreathingGame />;
+                    case 'trivia': return <TriviaGame />;
+                    case 'pet': return <VirtualPetGame />;
+                    default: return null;
+                }
+            };
+
+            const WelcomeScreen = () => (
+                <div className="welcome-screen">
+                    <h1 className="welcome-title">Learn2Flow</h1>
+                    <p className="welcome-subtitle">
+                        Transform your curiosity into personalized learning adventures.<br/>
+                        Discover connections between subjects you love and explore new territories of knowledge.
+                    </p>
+
+                    <div className="features-grid">
+                        <div className="feature-card">
+                            <div className="feature-icon">🧠</div>
+                            <h3>Smart Curiosity Mapping</h3>
+                            <p>We understand your unique interests and learning style to create personalized experiences</p>
+                        </div>
+                        <div className="feature-card">
+                            <div className="feature-icon">🔗</div>
+                            <h3>Cross-Subject Connections</h3>
+                            <p>Discover how your love for music connects to mathematics, or how gaming relates to psychology</p>
+                        </div>
+                        <div className="feature-card">
+                            <div className="feature-icon">⚡</div>
+                            <h3>Micro-Adventures</h3>
+                            <p>Engaging 10-30 minute activities that fit into your busy schedule and keep you motivated</p>
+                        </div>
+                        <div className="feature-card">
+                            <div className="feature-icon">🌟</div>
+                            <h3>Wellness Games</h3>
+                            <p>Stress relief, boredom busters, and mood-boosting games designed for student well-being</p>
+                        </div>
+                    </div>
+
+                    <button 
+                        className="btn btn-primary"
+                        onClick={() => setCurrentScreen('onboarding')}
+                        style={{fontSize: '1.1rem', padding: '1rem 2rem'}}
+                    >
+                        Start Your Learning Journey
+                    </button>
+                </div>
+            );
+
+            const OnboardingScreen = () => {
+                const currentQ = onboardingQuestions[onboardingStep];
+                const progress = ((onboardingStep + 1) / onboardingQuestions.length) * 100;
+
+                const handleAnswer = (value) => {
+                    if (currentQ.type === 'multi-select') {
+                        const current = userProfile[currentQ.key] || [];
+                        const updated = current.includes(value) 
+                            ? current.filter(item => item !== value)
+                            : [...current, value];
+                        setUserProfile(prev => ({...prev, [currentQ.key]: updated}));
+                    } else {
+                        setUserProfile(prev => ({...prev, [currentQ.key]: value}));
+                    }
+                };
+
+                const canProceed = () => {
+                    const answer = userProfile[currentQ.key];
+                    if (currentQ.type === 'text') return answer && answer.trim().length > 0;
+                    if (currentQ.type === 'multi-select') return answer && answer.length > 0;
+                    if (currentQ.type === 'single-select') return answer;
+                    return false;
+                };
+
+                const nextStep = () => {
+                    if (onboardingStep < onboardingQuestions.length - 1) {
+                        setOnboardingStep(onboardingStep + 1);
+                    } else {
+                        setCurrentScreen('dashboard');
+                    }
+                };
+
+                return (
+                    <div className="onboarding-screen">
+                        <div className="progress-bar">
+                            <div className="progress-fill" style={{width: `${progress}%`}}></div>
+                        </div>
+
+                        <div className="question-card">
+                            <h2>{currentQ.question}</h2>
+                            
+                            {currentQ.type === 'text' && (
+                                <input
+                                    type="text"
+                                    placeholder="Enter your name..."
+                                    value={userProfile[currentQ.key] || ''}
+                                    onChange={(e) => handleAnswer(e.target.value)}
+                                    style={{
+                                        width: '100%',
+                                        padding: '1rem',
+                                        border: '2px solid #e0e7ff',
+                                        borderRadius: '10px',
+                                        fontSize: '1rem',
+                                        marginTop: '1rem'
+                                    }}
+                                />
+                            )}
+
+                            {currentQ.type === 'multi-select' && (
+                                <div className="options-grid">
+                                    {currentQ.options.map((option, index) => (
+                                        <button
+                                            key={index}
+                                            className={`option-btn ${userProfile[currentQ.key]?.includes(option) ? 'selected' : ''}`}
+                                            onClick={() => handleAnswer(option)}
+                                        >
+                                            {typeof option === 'object' ? option.name : option}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+
+                            {currentQ.type === 'single-select' && (
+                                <div className="options-grid">
+                                    {currentQ.options.map((option, index) => (
+                                        <button
+                                            key={index}
+                                            className={`option-btn ${userProfile[currentQ.key] === option.id ? 'selected' : ''}`}
+                                            onClick={() => handleAnswer(option.id)}
+                                        >
+                                            <strong>{option.name}</strong>
+                                            <br/>
+                                            <small>{option.desc}</small>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '2rem'}}>
+                            <button 
+                                className="btn btn-secondary"
+                                onClick={() => onboardingStep > 0 ? setOnboardingStep(onboardingStep - 1) : setCurrentScreen('welcome')}
+                            >
+                                Back
+                            </button>
+                            <button 
+                                className={`btn ${canProceed() ? 'btn-primary' : 'btn-secondary'}`}
+                                onClick={nextStep}
+                                disabled={!canProceed()}
+                            >
+                                {onboardingStep < onboardingQuestions.length - 1 ? 'Next' : 'Complete Setup'}
+                            </button>
+                        </div>
+                    </div>
+                );
+            };
+
+            const DashboardScreen = () => {
+                const [activeTab, setActiveTab] = useState('learning');
+                const [currentMood, setCurrentMood] = useState('');
+
+                const moods = [
+                    { id: 'stressed', emoji: '😰', label: 'Stressed' },
+                    { id: 'bored', emoji: '😴', label: 'Bored' },
+                    { id: 'overwhelmed', emoji: '🤯', label: 'Overwhelmed' },
+                    { id: 'unmotivated', emoji: '😑', label: 'Unmotivated' },
+                    { id: 'good', emoji: '😊', label: 'Feeling Good' }
+                ];
+
+                const getRecommendedActivities = () => {
+                    if (activeTab === 'learning') return sampleActivities;
+                    
+                    if (currentMood === 'stressed') {
+                        return wellnessGames.filter(game => 
+                            game.subjects.includes('Stress Relief') || 
+                            game.subjects.includes('Mindfulness') ||
+                            game.subjects.includes('Relaxation')
+                        );
+                    } else if (currentMood === 'bored') {
+                        return wellnessGames.filter(game => 
+                            game.subjects.includes('Quick Learning') || 
+                            game.subjects.includes('Creativity') ||
+                            game.subjects.includes('Cognitive Training')
+                        );
+                    } else if (currentMood === 'overwhelmed') {
+                        return wellnessGames.filter(game => 
+                            game.subjects.includes('Mindfulness') || 
+                            game.subjects.includes('Relaxation') ||
+                            game.difficulty === 'Relaxing'
+                        );
+                    } else if (currentMood === 'unmotivated') {
+                        return wellnessGames.filter(game => 
+                            game.subjects.includes('Motivation') || 
+                            game.subjects.includes('Quick Learning') ||
+                            game.type === 'Mini Quiz'
+                        );
+                    }
+                    
+                    return wellnessGames;
+                };
+
+                return (
+                    <div className="dashboard-screen">
+                        <div className="dashboard-header">
+                            <div className="user-profile">
+                                <div className="profile-avatar">
+                                    {userProfile.name ? userProfile.name[0].toUpperCase() : 'U'}
+                                </div>
+                                <div>
+                                    <h2>Welcome back, {userProfile.name || 'Learner'}!</h2>
+                                    <p>Ready for your next curiosity adventure?</p>
+                                </div>
+                            </div>
+
+                            <div className="stats-grid">
+                                <div className="stat-card">
+                                    <div className="stat-number">12</div>
+                                    <div>Activities Completed</div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-number">7</div>
+                                    <div>Subjects Explored</div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-number">156</div>
+                                    <div>Minutes Learned</div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-number">23</div>
+                                    <div>Curiosity Connections</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="curiosity-map">
+                            <h3>Your Curiosity Profile</h3>
+                            <div className="interests-display">
+                                {userProfile.selectedInterests?.map((interest, index) => (
+                                    <span key={index} className="interest-tag">{interest}</span>
+                                ))}
+                            </div>
+                            <p style={{marginTop: '1rem', color: '#666'}}>
+                                Learning Style: <strong>{learningStyles.find(ls => ls.id === userProfile.learningStyle)?.name || 'Not specified'}</strong>
+                            </p>
+                        </div>
+
+                        {/* Mood Check-in Section */}
+                        <div className="wellness-section">
+                            <div className="mood-checker">
+                                <h3>How are you feeling right now?</h3>
+                                <p style={{color: '#666', marginBottom: '1rem'}}>
+                                    Let us suggest the perfect activity for your current mood
+                                </p>
+                                <div className="mood-options">
+                                    {moods.map(mood => (
+                                        <button
+                                            key={mood.id}
+                                            className={`mood-btn ${currentMood === mood.id ? 'selected' : ''}`}
+                                            onClick={() => setCurrentMood(mood.id)}
+                                        >
+                                            <span>{mood.emoji}</span>
+                                            <span>{mood.label}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Tab Navigation */}
+                        <div className="tab-navigation">
+                            <button 
+                                className={`tab-btn ${activeTab === 'learning' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('learning')}
+                            >
+                                📚 Learning Adventures
+                            </button>
+                            <button 
+                                className={`tab-btn ${activeTab === 'wellness' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('wellness')}
+                            >
+                                🌟 Wellness Games
+                            </button>
+                        </div>
+
+                        {/* Quick Relief Section */}
+                        {currentMood && activeTab === 'wellness' && (
+                            <div className="quick-relief-section">
+                                <h3>✨ Perfect for when you're feeling {moods.find(m => m.id === currentMood)?.label.toLowerCase()}</h3>
+                                <p>Here are some activities specially chosen to help you feel better!</p>
+                            </div>
+                        )}
+
+                        <h3>
+                            {activeTab === 'learning' ? 'Recommended Learning Adventures' : 
+                             currentMood ? `${moods.find(m => m.id === currentMood)?.emoji} Mood-Matched Activities` :
+                             '🌟 Wellness & Relief Games'}
+                        </h3>
+                        
+                        <div className={activeTab === 'learning' ? 'activity-grid' : 'wellness-games-grid'}>
+                            {getRecommendedActivities().map(activity => (
+                                <div key={activity.id} className={activeTab === 'learning' ? 'activity-card' : 'wellness-card'}>
+                                    {activeTab === 'wellness' && (
+                                        <>
+                                            <div className="wellness-icon">{activity.icon}</div>
+                                            <div className="wellness-badge">{activity.difficulty}</div>
+                                        </>
+                                    )}
+                                    {activeTab === 'learning' && (
+                                        <div className="activity-header">
+                                            <h4>{activity.title}</h4>
+                                            <span className="difficulty-badge">{activity.difficulty}</span>
+                                        </div>
+                                    )}
+                                    {activeTab === 'wellness' && <h4>{activity.title}</h4>}
+                                    <p style={{color: '#666', marginBottom: '1rem'}}>{activity.description}</p>
+                                    <div className="activity-tags">
+                                        {activity.subjects.map((subject, index) => (
+                                            <span key={index} className="tag">{subject}</span>
+                                        ))}
+                                    </div>
+                                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem'}}>
+                                        <small style={{color: '#888'}}>⏱️ {activity.duration}</small>
+                                        <button 
+                                            className="btn btn-primary" 
+                                            style={{padding: '0.5rem 1rem'}}
+                                            onClick={() => {
+                                                if (activeTab === 'wellness') {
+                                                    const gameMap = {
+                                                        4: 'zen',
+                                                        5: 'focus', 
+                                                        6: 'melody',
+                                                        7: 'breathing',
+                                                        8: 'trivia',
+                                                        9: 'pet'
+                                                    };
+                                                    setCurrentGame(gameMap[activity.id]);
+                                                }
+                                            }}
+                                        >
+                                            {activeTab === 'learning' ? 'Start Adventure' : 'Play Now'}
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div className="app-container">
+                    <header className="header">
+                        <nav className="nav">
+                            <div className="logo">Learn2Flow</div>
+                            {currentScreen === 'dashboard' && (
+                                <div className="nav-buttons">
+                                    <button className="btn btn-secondary">Explore</button>
+                                    <button className="btn btn-secondary">Community</button>
+                                    <button className="btn btn-secondary">Profile</button>
+                                </div>
+                            )}
+                        </nav>
+                    </header>
+
+                    <main className="main-content">
+                        {currentGame && renderCurrentGame()}
+                        {!currentGame && currentScreen === 'welcome' && <WelcomeScreen />}
+                        {!currentGame && currentScreen === 'onboarding' && <OnboardingScreen />}
+                        {!currentGame && currentScreen === 'dashboard' && <DashboardScreen />}
+                    </main>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<LearnFlowApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
